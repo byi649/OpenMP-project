@@ -37,7 +37,9 @@ bool bfs(int rGraph[V][V], int s, int t, int parent[])
 	{
 		int u = q.front();
 		q.pop();
-		for (int v = 0; v < V; v++)
+
+		#pragma omp parallel for
+		for (int v = 0; v < V; v++) {
 			if (visited[v] == false && rGraph[u][v] > 0)
 			{
 				q.push(v);
@@ -45,6 +47,7 @@ bool bfs(int rGraph[V][V], int s, int t, int parent[])
 
 				visited[v] = true;
 			}
+		}
 	}
 
 	// If we reached sink in BFS starting from source, then return
@@ -129,6 +132,7 @@ int edmondsKarp(int graph[V][V], int s, int t)
 int minimax(int graph[V][V], int n_nodes) {
 	int min = maxWeight;
 	int temp;
+	#pragma omp parallel for
 	for (int i = 0; i < n_nodes; i++) {
 		for (int j = i + 1; j < n_nodes; j++) {
 			temp = edmondsKarp(graph, i, j);
