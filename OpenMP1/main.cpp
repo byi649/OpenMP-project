@@ -1,14 +1,17 @@
 // Edmonds Karp algorithm taken from:
 // https://iq.opengenus.org/edmonds-karp-algorithm-for-maximum-flow/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <limits>
 #include <string>
 #include <queue>
+#include <omp.h>
 
 using namespace std;
 #define V 100 // Max nodes in graph
+#define maxWeight 500 // Maximum weight on edge
 
 /* Returns true if there is a path from source 's' to sink 't' in
  * residual graph. Also fills parent[] to store the path */
@@ -83,7 +86,19 @@ int edmondsKarp(int graph[V][V], int s, int t)
 	return max_flow;
 }
 
-
+int minimax(int graph[V][V], int n_nodes) {
+	int min = maxWeight;
+	int temp;
+	for (int i = 0; i < n_nodes; i++) {
+		for (int j = i + 1; j < n_nodes; j++) {
+			temp = edmondsKarp(graph, i, j);
+			if (temp < min) {
+				min = temp;
+			}
+		}
+	}
+	return min;
+}
 
 int main() {
 	int graph[V][V];
@@ -100,7 +115,7 @@ int main() {
 	int b;
 	int c;
 
-	file.open("../test/output/test00.input", ios::in);
+	file.open("../test/output/test01.input", ios::in);
 	if (file.is_open()) {
 
 		getline(file, line);
@@ -126,6 +141,9 @@ int main() {
 		}
 		file.close();
 	}
-	int result = edmondsKarp(graph, 0, 1);
-	cout << result << endl;
+
+	// TODO: scale rational to int
+	int min = minimax(graph, n_nodes);
+	cout << min << endl;
+
 }
