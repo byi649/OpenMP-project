@@ -1,12 +1,19 @@
 // OpenMPProject1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <stdio.h>
+#include <iostream>
 #include <omp.h>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+int main(int argc, char** argv) {
+
+	omp_set_dynamic(0);
+	omp_set_num_threads(4);
+	std::cout << "max threads: " << omp_get_max_threads() << "\n";
+
+	#pragma omp parallel
+	std::cout <<  "Hello from process: " << omp_get_thread_num() << "\n";
+
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
